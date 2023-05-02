@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  APP_URL: <the public URL of your application>
+  SITEADMINISTRATOR_PASSWORD: YourStrong(!)Password1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: octane-octane-env
+  name: octane-env

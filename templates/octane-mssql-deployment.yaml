@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -c -o .
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: octane-mssql
+  name: octane-mssql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: octane-mssql
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml -c -o .
+        kompose.version: 1.28.0 (c4137012e)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/octane-helm-default: "true"
+        io.kompose.service: octane-mssql
+    spec:
+      containers:
+        - env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: MSSQL_PID
+              value: Express
+            - name: SA_PASSWORD
+              value: OctaneIsTheBest1!
+          image: mcr.microsoft.com/mssql/server:2017-latest
+          name: octane-mssql
+          ports:
+            - containerPort: 1433
+          resources: {}
+      restartPolicy: Always
+status: {}

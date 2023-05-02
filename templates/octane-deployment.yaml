@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -c -o .
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: octane
+  name: octane
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: octane
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml -c -o .
+        kompose.version: 1.28.0 (c4137012e)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/octane-helm-default: "true"
+        io.kompose.service: octane
+    spec:
+      containers:
+        - env:
+            - name: APP_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: APP_URL
+                  name: octane-env
+            - name: DISABLE_VALIDATOR_MEMORY
+              value: "true"
+            - name: SITEADMINISTRATOR_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: SITEADMINISTRATOR_PASSWORD
+                  name: octane-env
+          image: lifecyclemanagement/octane
+          name: octane
+          ports:
+            - containerPort: 8080
+            - containerPort: 8443
+            - containerPort: 5701
+          resources: {}
+          volumeMounts:
+            - mountPath: /opt/octane/conf
+              name: octane-claim0
+            - mountPath: /opt/octane/log
+              name: octane-claim1
+            - mountPath: /opt/octane/repo
+              name: octane-claim2
+      restartPolicy: Always
+      volumes:
+        - name: octane-claim0
+          persistentVolumeClaim:
+            claimName: octane-claim0
+        - name: octane-claim1
+          persistentVolumeClaim:
+            claimName: octane-claim1
+        - name: octane-claim2
+          persistentVolumeClaim:
+            claimName: octane-claim2
+status: {}

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -c -o .
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: octane-mssql
+  name: octane-mssql
+spec:
+  ports:
+    - name: "1433"
+      port: 1433
+      targetPort: 1433
+  selector:
+    io.kompose.service: octane-mssql
+status:
+  loadBalancer: {}
