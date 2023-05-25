@@ -27,18 +27,12 @@ spec:
     spec:
       containers:
         - env:
-            - name: APP_URL
+            - name: POD_NAME
               valueFrom:
-                configMapKeyRef:
-                  key: APP_URL
-                  name: octane-env
-            - name: DISABLE_VALIDATOR_MEMORY
-              value: "true"
-            - name: SITEADMINISTRATOR_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  key: SITEADMINISTRATOR_PASSWORD
-                  name: octane-env
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: LOG_FOLDER
+              value: /logs/$(POD_NAME)
           image: lifecyclemanagement/octane
           name: octane
           ports:
@@ -47,21 +41,22 @@ spec:
             - containerPort: 5701
           resources: {}
           volumeMounts:
-            - mountPath: /opt/octane/conf
-              name: octane-claim0
-            - mountPath: /opt/octane/log
-              name: octane-claim1
-            - mountPath: /opt/octane/repo
-              name: octane-claim2
+            - mountPath: "/opt/octane/repo"
+              name: octane-nfs
+              subPath: repo
+            - mountPath: "/logs"
+              name: octane-nfs-log
+              subPath: ""
+          envFrom:
+            - configMapRef:
+              name: {{ .Release.Name }}-octane-configmap
       restartPolicy: Always
       volumes:
-        - name: octane-claim0
+        - name: octane-nfs
           persistentVolumeClaim:
-            claimName: octane-claim0
-        - name: octane-claim1
-          persistentVolumeClaim:
-            claimName: octane-claim1
-        - name: octane-claim2
-          persistentVolumeClaim:
-            claimName: octane-claim2
+            claimName: octane-claim
+        - name: octane-nfs-log
+          hostPath:
+            path: /tmp
+            type: DirectoryOrCreate
 status: {}

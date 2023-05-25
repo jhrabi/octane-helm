@@ -3,8 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: octane-claim0
-  name: octane-claim0
+    io.kompose.service: octane-claim-log
+  name: octane-claim-log
 spec:
   accessModes:
     - ReadWriteOnce
