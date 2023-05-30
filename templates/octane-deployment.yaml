@@ -49,7 +49,7 @@ spec:
               subPath: ""
           envFrom:
             - configMapRef:
-              name: {{ .Release.Name }}-octane-configmap
+              name: octane-env-configmap
       restartPolicy: Always
       volumes:
         - name: octane-nfs
